@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# TODO confirm if I need to have absolute paths for the binaries to execute. I think that is stupid and have raised that in the forums.
+# if that is the case then I will need to replace free with ${FREE} etc.
+
+function showfreemem {
+	memfree=$(free -h 2>/dev/null)
+	if [ ${?} -eq 0 ]; then 
+		echo "${memfree}"
+	else
+		echo "Failed to get free memory information"
+	fi		
+}
+
+function showdiskfree {
+	freedisk=$(df -h 2>/dev/null)
+	#If the return value from the subshell is false then provide an appropriate error message
+	if [ ${?} -eq 0 ]; then
+		echo "${freedisk}"
+	else
+		echo "Failed to get disk free information"
+	fi
+}
+
+function showquota {
+	# I'm not sure what the go here is, but the quota variable is empty after completion. Perhaps the quota stuff isn't working as I expect in a sub shell
+	quota=$(edquota ${USER} 2>/dev/null)
+	if [ ${?} -eq 0 ]; then
+		echo "${quota}"
+	else
+		echo "Failed to get quota information"
+	fi		
+}
+
+function showusergroups {
+	usergroups=$(groups 2>/dev/null)
+	if [ ${?} -eq 0 ]; then
+		echo "${usergroups}"
+	else
+		echo "Failed to get the list of groups the current user is a member of"
+	fi
+
+}
+
+function showhistory {
+	#I can't use $HISTFILE as that variable isn't declared for this subshell
+	userhistory=$(cat ~/.bash_history 2>/dev/null)
+	if [ ${?} -eq 0 ]; then
+		echo "${userhistory}" | less
+	else
+		echo "Failed to obtain the history for the current user"
+	fi
+
+}
+
+function showusage {
+	echo "usage: $0 freemem - to show the amount of free memory available on the system"
+	echo "usage: $0 diskfree - to show the amount of disk space free on each filesystem in the system"
+	echo "usage: $0 quota - to show the disk quote(s) for the current user"
+	echo "usage: $0 groups - to show the groups that the current user is a member of"
+	echo "usage: $0 history - to show all the commands that have been entered into the current shell"
+}
+
+if [ -z "$1" ]; then
+	echo "No arguments supplied. Usage examples are :"
+	showusage
+	exit 0
+fi
+
+case $1 in
+"freemem")
+	showfreemem
+	;;
+"diskfree")
+	showdiskfree
+	;;
+"quota")
+	quota=$(edquota ${USER} 2>/dev/null)
+	showquota
+	;;
+"groups")
+	showusergroups
+	;;
+"history")
+	showhistory
+	;;
+*)
+	echo "Unsupported argument. Usage examples are :"
+	showusage
+esac
