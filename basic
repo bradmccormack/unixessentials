@@ -1,73 +1,103 @@
 #!/bin/bash
 
-# TODO confirm if I need to have absolute paths for the binaries to execute. I think that is stupid and have raised that in the forums.
-# if that is the case then I will need to replace free with ${FREE} etc.
+ # enable history
+set -o history  
+
+HISTFILE=~/.bash_history 
+
+# Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
+FREE=/usr/bin/free
+DISKFREE=/usr/bin/df
+QUOTA=/usr/sbin/edquota
+GROUP=/usr/bin/groups
+CAT=/usr/bin/cat
+CLEAR=/usr/bin/clear
+PRINTF=/usr/bin/printf
+
+# Use the built in for echo
+ECHO="command echo"
 
 function showfreemem {
-	memfree=$(free -h 2>/dev/null)
-	if [ ${?} -eq 0 ]; then 
-		echo "${memfree}"
+	local memfree
+
+	memfree=$($FREE -h 2>/dev/null)
+	if [ "$memfree" ]; then
+		$PRINTF "\nFree memory information \n\n"
+		$ECHO "${memfree}"
 	else
-		echo "Failed to get free memory information"
+		$PRINTF "\nFailed to get free memory information.\n"
 	fi		
 }
 
 function showdiskfree {
-	freedisk=$(df -h 2>/dev/null)
-	#If the return value from the subshell is false then provide an appropriate error message
-	if [ ${?} -eq 0 ]; then
-		echo "${freedisk}"
+	local freedisk
+
+	freedisk=$(${DISKFREE} -h 2>/dev/null)
+	if [ "${freedisk}" ]; then
+		$PRINTF "\nDisk information\n\n"
+		$ECHO "${freedisk}"
 	else
-		echo "Failed to get disk free information"
+		$PRINTF "\nFailed to get disk free information.\n"
 	fi
 }
 
 function showquota {
-	# I'm not sure what the go here is, but the quota variable is empty after completion. Perhaps the quota stuff isn't working as I expect in a sub shell
-	quota=$(edquota "${USER}" 2>/dev/null)
-	if [ ${?} -eq 0 ]; then
-		echo "${quota}"
+	local quotausage
+
+	quotausage=$(${QUOTA} 2>/dev/null)
+	if [ "${quotausage}" ]; then
+		$PRINTF "\n Quota Information\n\n"
+		$PRINTF "${quotausage}\n"
 	else
-		echo "Failed to get quota information"
+		$PRINTF "\nNo quota information currently available.\n"
 	fi		
 }
 
 function showusergroups {
-	usergroups=$(groups 2>/dev/null)
-	if [ ${?} -eq 0 ]; then
-		echo "${usergroups}"
+	local usergroups
+
+	usergroups=$(${GROUP} 2>/dev/null)
+	if [ "${usergroups}" ]; then
+		$PRINTF "\nGroup information\n\n"
+		$PRINTF "\n${usergroups}\n"
 	else
-		echo "Failed to get the list of groups the current user is a member of"
+		$PRINTF "\nFailed to get the list of groups the current user is a member of.\n"
 	fi
 
 }
 
 function showhistory {
-	#I can't use $HISTFILE as that variable isn't declared for this subshell
-	userhistory=$(cat ~/.bash_history 2>/dev/null)
-	if [ ${?} -eq 0 ]; then
-		echo "${userhistory}" | less
+	local userhistory
+
+	userhistory=$(${CAT} ${HISTFILE} 2>/dev/null)
+
+	if [ "${userhistory}" ]; then
+		$PRINTF "\nHistory\n"
+		$ECHO "${userhistory}" | more
 	else
-		echo "Failed to obtain the history for the current user"
+		$PRINTF "\nFailed to obtain the history for the current user\n"
 	fi
 
 }
 
 function showusage {
-	echo "usage: $0 freemem - to show the amount of free memory available on the system"
-	echo "usage: $0 diskfree - to show the amount of disk space free on each filesystem in the system"
-	echo "usage: $0 quota - to show the disk quote(s) for the current user"
-	echo "usage: $0 groups - to show the groups that the current user is a member of"
-	echo "usage: $0 history - to show all the commands that have been entered into the current shell"
+	$PRINTF "\nusage: $0 freemem - to show the amount of free memory available on the system"
+	$PRINTF "\nusage: $0 diskfree - to show the amount of disk space free on each filesystem in the system"
+	$PRINTF "\nusage: $0 quota - to show the disk quote(s) for the current user"
+	$PRINTF "\nusage: $0 groups - to show the groups that the current user is a member of"
+	$PRINTF "\nusage: $0 history - to show all the commands that have been entered into the current shell\n"
 }
 
 if [ -z "$1" ]; then
-	echo "No arguments supplied. Usage examples are :"
+	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
 	showusage
 	exit 0
 fi
 
+${CLEAR}
+
 case $1 in
+ 
 "freemem")
 	showfreemem
 	;;
@@ -84,6 +114,6 @@ case $1 in
 	showhistory
 	;;
 *)
-	echo "Unsupported argument. Usage examples are :"
+	$PRINTF "\nUnsupported argument. Usage examples are :\n"
 	showusage
 esac
