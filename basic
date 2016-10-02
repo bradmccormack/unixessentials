@@ -13,6 +13,7 @@ GROUP=/usr/bin/groups
 CAT=/usr/bin/cat
 CLEAR=/usr/bin/clear
 PRINTF=/usr/bin/printf
+LESS=/usr/bin/less
 
 # Use the built in for echo
 ECHO="command echo"
@@ -73,7 +74,7 @@ function showhistory {
 
 	if [ "${userhistory}" ]; then
 		$PRINTF "\nHistory\n"
-		$ECHO "${userhistory}" | more
+		$ECHO "${userhistory}" | ${LESS}
 	else
 		$PRINTF "\nFailed to obtain the history for the current user\n"
 	fi
@@ -91,7 +92,7 @@ function showusage {
 if [ -z "$1" ]; then
 	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
 	showusage
-	exit 0
+	exit 1
 fi
 
 ${CLEAR}
