@@ -6,14 +6,14 @@ set -o history
 HISTFILE=~/.bash_history 
 
 # Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
-FREE=/usr/bin/free
-DISKFREE=/usr/bin/df
-QUOTA=/usr/bin/quota
-GROUP=/usr/bin/groups
 CAT=/usr/bin/cat
 CLEAR=/usr/bin/clear
-PRINTF=/usr/bin/printf
+DISKFREE=/usr/bin/df
+FREE=/usr/bin/free
+GROUP=/usr/bin/groups
 LESS=/usr/bin/less
+PRINTF=/usr/bin/printf
+QUOTA=/usr/bin/quota
 
 # Use the built in for echo
 ECHO="command echo"

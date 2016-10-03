@@ -1,0 +1,117 @@
+#!/bin/bash
+
+# Enable history
+set -o history 
+
+# No globbing
+set -f 
+
+HISTFILE=~/.bash_history 
+
+# Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
+CAT=/usr/bin/cat
+CLEAR=/usr/bin/clear
+GREP=/usr/bin/grep
+FIND=/usr/bin/find
+MKDIR=/usr/bin/mkdir
+PRINTF=/usr/bin/printf
+
+# Use the built in for echo
+ULIMIT="command ulimit"
+
+function showcpunumber {
+	local logicalcores
+
+	logicalcores=$(${CAT} /proc/cpuinfo | ${GREP} processor -c)
+	if [ "${logicalcores}" ]; then
+		$PRINTF "Amount of cpu cores = ${logicalcores} \n"
+	else
+		$PRINTF "Failed to get cpu core count.\n"
+	fi		
+}
+
+function showmaximumfilehandlecount {
+	local filehandlescap
+
+	filehandlescap=$(${ULIMIT} -n)
+	if [ "${filehandlescap}" ]; then
+		$PRINTF "Max open file handles = ${filehandlescap}\n"
+	else
+		$PRINTF "Failed to obtain maximum file handle count\n"
+	fi		
+}
+
+function findandcopy {
+	local wildcard
+	local destination
+	
+	wildcard=${1}
+	destination=${2}
+
+	if ! $MKDIR -p "${destination}" 2>/dev/null ; then
+    	$PRINTF "\nFailed to create ${destination}. Exiting.\n"
+		exit 1
+	fi
+	
+	# Find any files that match the wildcard specified. Exec a copy of the found file to the destination and redirect STDERR to /dev/null as we want to handle errors ourself.
+	if ! $FIND .  -type f -name "${wildcard}" -exec cp {} "${destination}" \; ; then
+		$PRINTF "\nFailed to copy files matching ${wildcard} to ${destination}.\n"
+		exit 1
+	fi
+		
+	$PRINTF "\nFiles have been copied matching ${wildcard} to ${destination}\n"
+}
+
+function showusage {
+	$PRINTF "\nusage: $0 -p - to show the amount of cpus available in the system"
+	$PRINTF "\nusage: $0 -o - to show the maximum number of open files allowed per user"
+	$PRINTF "\nusage: $0 -b [wildcard] [destination] - searches for all files that match the wildcard specified and copies them to the destination specified."
+	$PRINTF "\nusage:"
+}
+
+if [ -z "$1" ]; then
+	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
+	showusage
+	exit 1
+fi
+
+${CLEAR}
+
+declare -i ERRORARGS=0
+declare -i idx
+
+while getopts ":pob:c:" arg; do
+    case "${arg}" in
+    	"p")
+			showcpunumber
+			;;
+		"o")
+			showmaximumfilehandlecount 	
+			;;
+		"b")
+			params=($@)
+			wildcard=${OPTARG}
+			idx=$((OPTIND-1))
+			destination=${params[$idx]}
+			findandcopy "${wildcard}" "${destination}" 
+			;;
+		*)
+			((ERRORARGS++))
+			;;	
+	esac
+done	
+
+shift $((OPTIND-1))
+
+# If at least one unsupported argument as found, then show usage examples
+if [ "${ERRORARGS}" -gt 0 ]; then
+	$PRINTF "\nUnsupported arguments found. Usage examples are :\n"
+	showusage
+fi
+
+
+
+
+
+ 
+
