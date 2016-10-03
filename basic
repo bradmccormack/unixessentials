@@ -1,8 +1,5 @@
 #!/bin/bash
 
- # enable history
-set -o history  
-
 HISTFILE=~/.bash_history 
 
 # Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)

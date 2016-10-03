@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Enable history
-set -o history 
-
 # No globbing
 set -f 
 
