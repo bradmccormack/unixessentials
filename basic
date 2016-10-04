@@ -15,7 +15,7 @@ QUOTA=/usr/bin/quota
 # Use the built in for echo
 ECHO="command echo"
 
-function showfreemem {
+function showfreemem() {
 	local memfree
 
 	memfree=$($FREE -h 2>/dev/null)
@@ -27,7 +27,7 @@ function showfreemem {
 	fi		
 }
 
-function showdiskfree {
+function showdiskfree() {
 	local freedisk
 
 	freedisk=$(${DISKFREE} -h 2>/dev/null)
@@ -39,7 +39,7 @@ function showdiskfree {
 	fi
 }
 
-function showquota {
+function showquota() {
 	local quotausage
 
 	quotausage=$(${QUOTA} 2>/dev/null)
@@ -51,7 +51,7 @@ function showquota {
 	fi		
 }
 
-function showusergroups {
+function showusergroups() {
 	local usergroups
 
 	usergroups=$(${GROUP} 2>/dev/null)
@@ -64,7 +64,7 @@ function showusergroups {
 
 }
 
-function showhistory {
+function showhistory() {
 	local userhistory
 
 	userhistory=$(${CAT} ${HISTFILE} 2>/dev/null)
@@ -78,7 +78,7 @@ function showhistory {
 
 }
 
-function showusage {
+function showusage() {
 	$PRINTF "\nusage: $0 freemem - to show the amount of free memory available on the system"
 	$PRINTF "\nusage: $0 diskfree - to show the amount of disk space free on each filesystem in the system"
 	$PRINTF "\nusage: $0 quota - to show the disk quote(s) for the current user"

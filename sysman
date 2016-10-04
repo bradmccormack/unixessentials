@@ -1,0 +1,132 @@
+#!/bin/bash
+
+# No globbing
+set -f 
+
+HISTFILE=~/.bash_history 
+
+# Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
+CAT=/usr/bin/cat
+CLEAR=/usr/bin/clear
+GREP=/usr/bin/grep
+FIND=/usr/bin/find
+MKDIR=/usr/bin/mkdir
+PRINTF=/usr/bin/printf
+
+# Use the built in for echo
+ECHO="command echo"
+
+# TODO trap SIGINT and whatever else I need to
+
+declare -i choice
+
+
+function mainmenu() {
+cat << EOF
+ 
+ Welcome to System Manager
+ -------------------------
+
+1) basic menu options
+2) advanced menu options
+3) passwd file options
+4) quit
+
+EOF
+}
+
+function basicmenu() {
+cat << EOF
+
+ Basic Tasks Menu
+ ----------------
+
+ 1) Show free memory
+ 2) Show free disk space
+ 3) Show disk quota
+ 4) Show the groups I am a member of
+ 5) Show the history of commands for bash
+ 6) Quit this menu
+
+EOF	
+}
+
+function advancedmenu() {
+cat << EOF	
+
+ Advanced Tasks Menu
+ ----------------
+
+1) Print the number of CPUs available on the system
+2) Print the maximum number of open files allowed per user
+3) Backup all files that match a criterion
+4) Quit this menu
+
+EOF
+}
+
+function passwdmenu() {
+cat << EOF
+
+Passwd Tasks Menu
+----------------
+
+1) Print the userid of a specified user
+2) Print the groupid of a specified user
+3) Print the comment field for a specified user
+4) Print the home directory of a specified user
+5) Print the default shell of a specified user
+6) Exit this menu
+
+EOF
+}
+# $1 is the menu to render, $2 is the prompt
+function getchoice() {
+	local -i menuopts
+	
+	choice=0
+
+	# Output the menu to a variable - subtract the heading and other blank lines to find out how many options there are
+	menuopts=$(( $($ECHO "$($1)" | wc -l) - 4 ))
+
+	#echo "got here - ${menuopts} menu options to choose from"
+
+	while (( choice <= 0 || choice > ${menuopts} ));
+	do
+		# Display the menu
+		$1
+
+		# Display the prompt and get the next number
+		$PRINTF "%s" "$2"
+		read choice
+		if (( choice <= 0 || choice > ${menuopts} )); then
+			$ECHO "Invalid choice. Please try again"
+		fi
+
+	done
+
+}
+
+choice=0
+
+while (( choice != 4 ))
+do
+	getchoice mainmenu "Please enter a choice:"
+	case ${choice} in
+ 
+	1)
+		echo "Showing basic menu"
+		basicmenu
+		;;
+	2)
+		echo "Showing advanced menu"
+		advancedmenu
+		;;
+	3)
+		echo "Showing passwd menu"
+		passwdmenu	
+		;;
+	esac
+done
+
+echo "Bye Bye"

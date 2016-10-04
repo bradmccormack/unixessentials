@@ -16,7 +16,7 @@ PRINTF=/usr/bin/printf
 # Use the built in for echo
 ULIMIT="command ulimit"
 
-function showcpunumber {
+function showcpunumber() {
 	local logicalcores
 
 	logicalcores=$(${CAT} /proc/cpuinfo | ${GREP} processor -c)
@@ -27,7 +27,7 @@ function showcpunumber {
 	fi		
 }
 
-function showmaximumfilehandlecount {
+function showmaximumfilehandlecount() {
 	local filehandlescap
 
 	filehandlescap=$(${ULIMIT} -n)
@@ -38,7 +38,7 @@ function showmaximumfilehandlecount {
 	fi		
 }
 
-function findandcopy {
+function findandcopy() {
 	local wildcard
 	local destination
 	
@@ -59,7 +59,7 @@ function findandcopy {
 	$PRINTF "\nFiles have been copied matching ${wildcard} to ${destination}\n"
 }
 
-function showusage {
+function showusage() {
 	$PRINTF "\nusage: $0 -p - to show the amount of cpus available in the system"
 	$PRINTF "\nusage: $0 -o - to show the maximum number of open files allowed per user"
 	$PRINTF "\nusage: $0 -b [wildcard] [destination] - searches for all files that match the wildcard specified and copies them to the destination specified."
@@ -105,10 +105,3 @@ if [ "${ERRORARGS}" -gt 0 ]; then
 	$PRINTF "\nUnsupported arguments found. Usage examples are :\n"
 	showusage
 fi
-
-
-
-
-
- 
-
