@@ -12,6 +12,9 @@ GREP=/usr/bin/grep
 FIND=/usr/bin/find
 MKDIR=/usr/bin/mkdir
 PRINTF=/usr/bin/printf
+BASIC=./basic
+ADVANCED=./advanced
+
 
 # Use the built in for echo
 ECHO="command echo"
@@ -36,26 +39,28 @@ EOF
 }
 
 function basicmenu() {
+
 cat << EOF
 
- Basic Tasks Menu
- ----------------
+Basic Tasks Menu
+----------------
 
- 1) Show free memory
- 2) Show free disk space
- 3) Show disk quota
- 4) Show the groups I am a member of
- 5) Show the history of commands for bash
- 6) Quit this menu
+1) Show free memory
+2) Show free disk space
+3) Show disk quota
+4) Show the groups I am a member of
+5) Show the history of commands for bash
+6) Quit this menu
 
-EOF	
+EOF
 }
 
 function advancedmenu() {
+
 cat << EOF	
 
- Advanced Tasks Menu
- ----------------
+Advanced Tasks Menu
+----------------
 
 1) Print the number of CPUs available on the system
 2) Print the maximum number of open files allowed per user
@@ -80,6 +85,7 @@ Passwd Tasks Menu
 
 EOF
 }
+
 # $1 is the menu to render, $2 is the prompt
 function getchoice() {
 	local -i menuopts
@@ -87,9 +93,13 @@ function getchoice() {
 	choice=0
 
 	# Output the menu to a variable - subtract the heading and other blank lines to find out how many options there are
+	#menudata=$($ECHO "$($1)")
+	#echo "$menudata"
+	#exit 0
+
 	menuopts=$(( $($ECHO "$($1)" | wc -l) - 4 ))
 
-	#echo "got here - ${menuopts} menu options to choose from"
+	echo "got here - ${menuopts} menu options to choose from"
 
 	while (( choice <= 0 || choice > ${menuopts} ));
 	do
@@ -111,20 +121,35 @@ choice=0
 
 while (( choice != 4 ))
 do
-	getchoice mainmenu "Please enter a choice:"
+	getchoice mainmenu "Please enter a choice :"
 	case ${choice} in
  
 	1)
-		echo "Showing basic menu"
-		basicmenu
+		getchoice basicmenu "Please enter an option :"
+		case ${choice} in
+		
+		1)	$BASIC freemem
+			;;
+		2)	$BASIC diskfree
+			;;
+		3)	$BASIC quota
+			;;
+		4)	$BASIC groups
+			;;
+		5)	$BASIC history
+			;;
+		6)	continue
+			;;
+		esac
+		choice=0		
 		;;
 	2)
 		echo "Showing advanced menu"
-		advancedmenu
+		#advancedmenu
 		;;
 	3)
 		echo "Showing passwd menu"
-		passwdmenu	
+		#passwdmenu	
 		;;
 	esac
 done
