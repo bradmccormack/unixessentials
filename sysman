@@ -93,13 +93,9 @@ function getchoice() {
 	choice=0
 
 	# Output the menu to a variable - subtract the heading and other blank lines to find out how many options there are
-	#menudata=$($ECHO "$($1)")
-	#echo "$menudata"
-	#exit 0
-
-	menuopts=$(( $($ECHO "$($1)" | wc -l) - 4 ))
-
-	echo "got here - ${menuopts} menu options to choose from"
+	menuopts=$(( $($ECHO "$($1)" | sed '/^\s*$/d' | wc -l) ))
+	echo "Menu opts count is ${menuopts}"
+	exit 0
 
 	while (( choice <= 0 || choice > ${menuopts} ));
 	do
