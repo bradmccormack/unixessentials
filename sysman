@@ -95,7 +95,6 @@ function getchoice() {
 	# Output the menu to a variable - sfind out how many options there are and only include lines starting with a single number and a )
 	menuopts=$(( $($ECHO "$($1)" | grep '^[0-9])' | wc -l) ))
 	#echo "Menu opts count is ${menuopts}"
-	#exit 0
 
 	while (( choice <= 0 || choice > ${menuopts} ));
 	do
@@ -115,38 +114,60 @@ function getchoice() {
 
 choice=0
 
+# TODO STOP RE-USING CHOICE - make the getchoice return something and just use /?
 while (( choice != 4 ))
 do
 	getchoice mainmenu "Please enter a choice :"
 	case ${choice} in
  
-	1)
-		getchoice basicmenu "Please enter an option :"
-		case ${choice} in
-		
-		1)	$BASIC freemem
+		1)
+			getchoice basicmenu "Please enter an option :"
+			case ${choice} in
+			
+				1)	
+					$BASIC freemem
+					;;
+				2)	
+					$BASIC diskfree
+					;;
+				3)	
+					$BASIC quota
+					;;
+				4)	
+					$BASIC groups
+					;;
+				5)	
+					$BASIC history
+					;;
+				6)	
+					continue
+					;;
+			esac
+			choice=0		
 			;;
-		2)	$BASIC diskfree
+		2)
+			getchoice advancedmenu "Please enter your choice :"
+			case ${choice} in
+			
+				1) 
+					$ADVANCED -p
+					;;
+				2)	$ADVANCED -o
+					;;
+				3)	
+					echo "TODO - Still have to grab input of the wildcard they want and the destination directory"
+					;;
+				4)
+					choice=0	
+					continue
+					;;	
+			esac
+			choice=0
+			;;		
+		3)
+			echo "Showing passwd menu"
+			#passwdmenu	
 			;;
-		3)	$BASIC quota
-			;;
-		4)	$BASIC groups
-			;;
-		5)	$BASIC history
-			;;
-		6)	continue
-			;;
-		esac
-		choice=0		
-		;;
-	2)
-		echo "Showing advanced menu"
-		#advancedmenu
-		;;
-	3)
-		echo "Showing passwd menu"
-		#passwdmenu	
-		;;
 	esac
 done
 
