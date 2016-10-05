@@ -165,8 +165,7 @@ do
 			choice=0
 			;;		
 		3)
-			echo "Showing passwd menu"
-			#passwdmenu	
+			getchoice passwdmenu "Please enter your selection :"	
 			;;
 	esac
 done
