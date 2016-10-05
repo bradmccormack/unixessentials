@@ -92,10 +92,10 @@ function getchoice() {
 	
 	choice=0
 
-	# Output the menu to a variable - subtract the heading and other blank lines to find out how many options there are
-	menuopts=$(( $($ECHO "$($1)" | sed '/^\s*$/d' | wc -l) ))
-	echo "Menu opts count is ${menuopts}"
-	exit 0
+	# Output the menu to a variable - sfind out how many options there are and only include lines starting with a single number and a )
+	menuopts=$(( $($ECHO "$($1)" | grep '^[0-9])' | wc -l) ))
+	#echo "Menu opts count is ${menuopts}"
+	#exit 0
 
 	while (( choice <= 0 || choice > ${menuopts} ));
 	do
