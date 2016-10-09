@@ -24,5 +24,7 @@ Notes
 *****
 
 * I'm pretty happy with how I implemented the menus. It ended up being a lot less code than doing it by hand for all menus and then handling different valid range of choices.
+
 * I'm happy that I learned about ShellCheck. I didn't know about this before. I also installed it on Arch Linux here so I could use it via the cli continuously
 
+* My Vim skills have always been farily minimal. I usually only use Vim on headless boxes (yep it's still better than nano etc (emacs too :-P ). I started this assignment in Sublime 3 but then decided to work completely in Vim which will refine my skills for the exam. One thing I did do, was name local variables lower case. When I confirmed in the PDF that the assignment spec requires upper case for all variables I learned about the substitute command. I could therefore do things like :%s/memfree/MEMFREE/g which is AWESOME! 

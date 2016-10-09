@@ -18,12 +18,12 @@ EXIT="command exit"
 
 
 function showfreemem() {
-	local memfree
+	local MEMFREE
 
-	memfree=$($FREE -h 2>/dev/null)
-	if [ "$memfree" ]; then
+	MEMFREE=$($FREE -h 2>/dev/null)
+	if [ "$MEMFREE" ]; then
 		$PRINTF "\nFree memory information \n\n"
-		$ECHO "${memfree}"
+		$ECHO "${MEMFREE}"
 	else
 		$PRINTF "\nFailed to get free memory information.\n"
 		$EXIT 3
@@ -31,12 +31,12 @@ function showfreemem() {
 }
 
 function showdiskfree() {
-	local freedisk
+	local FREEDISK
 
-	freedisk=$(${DISKFREE} -h 2>/dev/null)
-	if [ "${freedisk}" ]; then
+	FREEDISK=$(${DISKFREE} -h 2>/dev/null)
+	if [ "${FREEDISK}" ]; then
 		$PRINTF "\nDisk information\n\n"
-		$ECHO "${freedisk}"
+		$ECHO "${FREEDISK}"
 	else
 		$PRINTF "\nFailed to get disk free information.\n"
 		$EXIT 3
@@ -44,25 +44,25 @@ function showdiskfree() {
 }
 
 function showquota() {
-	local quotausage
+	local QUOTAUSAGE
 
-	quotausage=$(${QUOTA} 2>/dev/null)
-	if [ "${quotausage}" ]; then
+	QUOTAUSAGE=$(${QUOTA} 2>/dev/null)
+	if [ "${QUOTAUSAGE}" ]; then
 		$PRINTF "\n Quota Information\n\n"
-		$PRINTF "${quotausage}\n"
+		$PRINTF "${QUOTAUSAGE}\n"
 	else
 		$PRINTF "\nNo quota information currently available.\n"
 		$EXIT 3
 	fi		
 }
 
-function showusergroups() {
-	local usergroups
+function showUSERGROUPS() {
+	local USERGROUPS
 
-	usergroups=$(${GROUP} 2>/dev/null)
-	if [ "${usergroups}" ]; then
+	USERGROUPS=$(${GROUP} 2>/dev/null)
+	if [ "${USERGROUPS}" ]; then
 		$PRINTF "\nGroup information\n\n"
-		$PRINTF "\n${usergroups}\n"
+		$PRINTF "\n${USERGROUPS}\n"
 	else
 		$PRINTF "\nFailed to get the list of groups the current user is a member of.\n"
 		$EXIT 3
@@ -71,12 +71,12 @@ function showusergroups() {
 }
 
 function showhistory() {
-	local userhistory
+	local USERHISTORY
 
-	userhistory=$(${CAT} ${HISTFILE} 2>/dev/null)
-	if [ "${userhistory}" ]; then
+	USERHISTORY=$(${CAT} ${HISTFILE} 2>/dev/null)
+	if [ "${USERHISTORY}" ]; then
 		$PRINTF "\nHistory\n"
-		$ECHO "${userhistory}" | ${LESS}
+		$ECHO "${USERHISTORY}" | ${LESS}
 	else
 		$PRINTF "\nFailed to obtain the history for the current user\n"
 		$EXIT 3
@@ -112,7 +112,7 @@ case $1 in
 	showquota
 	;;
 "groups")
-	showusergroups
+	showUSERGROUPS
 	;;
 "history")
 	showhistory
