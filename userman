@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# No globbing
+set -f 
+
+
+# Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
+CAT=/usr/bin/cat
+CLEAR=/usr/bin/clear
+CUT=/usr/bin/cut
+GREP=/usr/bin/grep
+PRINTF=/usr/bin/printf
+
+# Use the built in for echo
+
+function showuserid() {
+	local userid
+	if [ "${1}" ]; then
+		userid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 3)
+		$PRINTF "\nThe userid is ${userid}\n"
+
+	else
+		$PRINTF "\nUser name was not specified."
+	fi
+}
+
+function showgroupid() {
+	local groupid
+	if [ "${1}" ]; then
+		groupid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 4)
+		$PRINTF "\nThe groupid is ${groupid}\n"
+	else
+		$PRINTF "\nUser name was not specified."
+	fi
+}
+
+function showcomment() {
+	local comment
+	if [ "${1}" ]; then
+		comment=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 5)
+		$PRINTF "\nThe comment is ${comment}\n"
+	else
+		$PRINTF "\nUser name was not specified."
+	fi
+}
+
+function showhome() {
+	local home
+	if [ "${1}" ]; then
+		home=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 6)
+		$PRINTF "\nThe home directory is ${home}\n"
+	else
+		$PRINTF "\nUser name was not specified."
+	fi
+}
+
+
+function showusage() {
+	$PRINTF "\nusage: $0 userid [user] - to show the userid for the user specified"
+	$PRINTF "\nusage: $0 groupid [user] - to show the groupid for the user specified"
+	$PRINTF "\nusage: $0 comment [user] - to any comments for the user specified"
+	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified\n"
+}
+
+if [ -z "$1" ]; then
+	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
+	showusage
+	exit 1
+fi
+
+${CLEAR}
+
+case $1 in
+ 
+"userid")
+	showuserid "$2"
+	;;
+"groupid")
+	showgroupid "$2"
+	;;
+"comment")
+	showcomment "$2"
+	;;
+"home")
+	showhome "$2"
+	;;
+*)
+	$PRINTF "\nUnsupported argument. Usage examples are :\n"
+	showusage
+esac
