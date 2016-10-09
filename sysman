@@ -6,11 +6,6 @@ set -f
 HISTFILE=~/.bash_history 
 
 # Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
-CAT=/usr/bin/cat
-CLEAR=/usr/bin/clear
-GREP=/usr/bin/grep
-FIND=/usr/bin/find
-MKDIR=/usr/bin/mkdir
 PRINTF=/usr/bin/printf
 BASIC=./basic
 ADVANCED=./advanced
@@ -22,7 +17,6 @@ READ="command read"
 # TODO trap SIGINT and whatever else I need to
 
 declare -i choice
-
 
 function mainmenu() {
 cat << EOF
@@ -93,10 +87,10 @@ function getchoice() {
 	choice=0
 
 	# Output the menu to a variable - sfind out how many options there are and only include lines starting with a single number and a )
-	menuopts=$(( $($ECHO "$($1)" | grep '^[0-9])' | wc -l) ))
+	menuopts=$(( $($ECHO "$($1)" | grep '^[0-9])' -c) ))
 	#echo "Menu opts count is ${menuopts}"
-
-	while (( choice <= 0 || choice > ${menuopts} ));
+	#exit 0
+	while (( choice <= 0 || choice > menuopts ));
 	do
 		# Display the menu
 		$1
@@ -104,7 +98,7 @@ function getchoice() {
 		# Display the prompt and get the next number
 		$PRINTF "%s" "$2"
 		$READ choice
-		if (( choice <= 0 || choice > ${menuopts} )); then
+		if (( choice <= 0 || choice > menuopts )); then
 			$ECHO "Invalid choice. Please try again"
 		fi
 
@@ -145,6 +139,8 @@ do
 			choice=0		
 			;;
 		2)
+			wildcard=""
+			destination=""
 			getchoice advancedmenu "Please enter your choice :"
 			case ${choice} in
 			
@@ -157,7 +153,7 @@ do
 					$READ wildcard
 					$PRINTF "Enter the destination directory to backup the files to >"
 					$READ destination
-					$ADVANCED -b ${wildcard} ${destination}
+					$ADVANCED -b "${wildcard}" "${destination}"
 
 					;;
 				4)
