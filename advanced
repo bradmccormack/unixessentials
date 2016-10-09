@@ -19,52 +19,52 @@ EXIT="command exit"
 ULIMIT="command ulimit"
 
 function showcpunumber() {
-	local logicalcores
+	local LOGICALCORES
 
-	logicalcores=$(${CAT} /proc/cpuinfo | ${GREP} processor -c)
-	if [ "${logicalcores}" ]; then
-		$PRINTF "Amount of cpu cores = ${logicalcores} \n"
+	LOGICALCORES=$(${CAT} /proc/cpuinfo | ${GREP} processor -c)
+	if [ "${LOGICALCORES}" ]; then
+		$PRINTF "Amount of cpu cores = ${LOGICALCORES} \n"
 	else
 		$PRINTF "Failed to get cpu core count.\n"
 	fi		
 }
 
 function showmaximumfilehandlecount() {
-	local filehandlescap
+	local FILEHANDLESCAP
 
-	filehandlescap=$(${ULIMIT} -n)
-	if [ "${filehandlescap}" ]; then
-		$PRINTF "Max open file handles = ${filehandlescap}\n"
+	FILEHANDLESCAP=$(${ULIMIT} -n)
+	if [ "${FILEHANDLESCAP}" ]; then
+		$PRINTF "Max open file handles = ${FILEHANDLESCAP}\n"
 	else
 		$PRINTF "Failed to obtain maximum file handle count\n"
 	fi		
 }
 
 function findandcopy() {
-	local wildcard
-	local destination
+	local WILDCARD
+	local DESTINATION
 	
-	wildcard=${1}
-	destination=${2}
+	WILDCARD=${1}
+	DESTINATION=${2}
 
-	if ! $MKDIR -p "${destination}" 2>/dev/null ; then
-    		$PRINTF "\nFailed to create ${destination}. Exiting.\n"
+	if ! $MKDIR -p "${DESTINATION}" 2>/dev/null ; then
+    		$PRINTF "\nFailed to create ${DESTINATION}. Exiting.\n"
 		$EXIT 3
 	fi
 	
-	# Find any files that match the wildcard specified. Exec a copy of the found file to the destination and redirect STDERR to /dev/null as we want to handle errors ourself.
-	if ! $FIND .  -type f -name "${wildcard}" -exec $CP {} "${destination}" \; ; then
-		$PRINTF "\nFailed to copy files matching ${wildcard} to ${destination}.\n"
+	# Find any files that match the WILDCARD specified. Exec a copy of the found file to the DESTINATION and redirect STDERR to /dev/null as we want to handle errors ourself.
+	if ! $FIND .  -type f -name "${WILDCARD}" -exec $CP {} "${DESTINATION}" \; ; then
+		$PRINTF "\nFailed to copy files matching ${WILDCARD} to ${DESTINATION}.\n"
 		$EXIT 3
 	fi
 		
-	$PRINTF "\nFiles have been copied matching ${wildcard} to ${destination}\n"
+	$PRINTF "\nFiles have been copied matching ${WILDCARD} to ${DESTINATION}\n"
 }
 
 function showusage() {
 	$PRINTF "\nusage: $0 -p - to show the amount of cpus available in the system"
 	$PRINTF "\nusage: $0 -o - to show the maximum number of open files allowed per user"
-	$PRINTF "\nusage: $0 -b [wildcard] [destination] - searches for all files that match the wildcard specified and copies them to the destination specified.\n"
+	$PRINTF "\nusage: $0 -b [WILDCARD] [DESTINATION] - searches for all files that match the WILDCARD specified and copies them to the DESTINATION specified.\n"
 	$EXIT 3
 }
 
@@ -89,11 +89,11 @@ while getopts ":pob:c:" arg; do
 			;;
 		"b")
 			params=($@)
-			wildcard=${OPTARG}
+			WILDCARD=${OPTARG}
 			# Obtain the destination
 			idx=$((OPTIND-1))
-			destination=${params[$idx]}
-			findandcopy "${wildcard}" "${destination}" 
+			DESTINATION=${params[$idx]}
+			findandcopy "${WILDCARD}" "${DESTINATION}" 
 			;;
 		*)
 			((ERRORARGS++))

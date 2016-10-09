@@ -25,95 +25,95 @@ function checkuser() {
 }
 
 function showuserid() {
-	local userid
+	local USERID
 
 	if [ "${1}" ]; then
 		checkuser "$1"
-		userid=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 3 2>/dev/null)
+		USERID=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 3 2>/dev/null)
 
-		if [ "${userid}" ];then
-			$PRINTF "\nThe userid is ${userid}\n"
+		if [ "${USERID}" ];then
+			$PRINTF "\nThe userid is ${USERID}\n"
 		else
-			$PRINTF "\nFailed to get the userid from /etc/passwd"
+			$PRINTF "\nFailed to get the userid from /etc/passwd\n"
 			$EXIT 3
 		fi
 	else
-		$PRINTF "\nUser name was not specified."
+		$PRINTF "\nUser name was not specified.\n"
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 		$EXIT 3
 	fi
 }
 
 function showgroupid() {
-	local groupid
+	local GROUPID
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		groupid=$($CAT /etc/passwd 2>/dev/null 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 4 2>/dev/null)
-		if [ "${groupid}" ];then
-			$PRINTF "\nThe groupid is ${groupid}\n"
+		GROUPID=$($CAT /etc/passwd 2>/dev/null 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 4 2>/dev/null)
+		if [ "${GROUPID}" ];then
+			$PRINTF "\nThe groupid is ${GROUPID}\n"
 		else
-			$PRINTF "\nFailed to get the groupid from /etc/passwd"
+			$PRINTF "\nFailed to get the groupid from /etc/passwd\n"
 			$EXIT 3
 		fi
 	else
-		$PRINTF "\nUser name was not specified."
+		$PRINTF "\nUser name was not specified.\n"
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 		$EXIT 3
 	fi
 }
 
 function showcomment() {
-	local comment
+	local COMMENT
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		comment=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 5 2>/dev/null)
-		if [ "${comment}" ]; then
-			$PRINTF "\nThe comment is ${comment}\n"
+		COMMENT=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 5 2>/dev/null)
+		if [ "${COMMENT}" ]; then
+			$PRINTF "\nThe comment is ${COMMENT}\n"
 		else
-			$PRINTF "\nFailed to get the comment from /etc/passwd"
+			$PRINTF "\nFailed to get the comment from /etc/passwd\n"
 			$EXIT 3
 		fi
 	else
-		$PRINTF "\nUser name was not specified."
+		$PRINTF "\nUser name was not specified.\n"
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 		$EXIT 3
 	fi
 }
 
 function showhome() {
-	local home
+	local HOME
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		home=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 6)
-		if [ "${home}" ]; then
-			$PRINTF "\nThe home directory is ${home}\n"
+		HOME=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 6)
+		if [ "${HOME}" ]; then
+			$PRINTF "\nThe home directory is ${HOME}\n"
 		else
-			$PRINTF "\nFailed to get the home directory from /etc/passwd"
+			$PRINTF "\nFailed to get the HOME directory from /etc/passwd\n"
 			$EXIT 3
 		fi
 	else
-		$PRINTF "\nUser name was not specified."
+		$PRINTF "\nUser name was not specified.\n"
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 		$EXIT 3
 	fi
 }
 
 function showshell() {
-	local shell
+	local SHELL
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		shell=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 7)
-		if [ "${shell}" ]; then
-			$PRINTF "\nThe shell is ${shell}\n"
+		SHELL=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 7)
+		if [ "${SHELL}" ]; then
+			$PRINTF "\nThe shell is ${SHELL}\n"
 		else
-			$PRINTF "\nFailed to get the shell from /etc/passwd"
+			$PRINTF "\nFailed to get the shell from /etc/passwd\n"
 		fi
 	else
-		$PRINTF "\nUsername was not specified."
+		$PRINTF "\nUsername was not specified.\n"
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 		$EXIT 3
 	fi
@@ -122,7 +122,7 @@ function showshell() {
 
 function showusage() {
 	$PRINTF "\nusage: $0 userid [user] - to show the userid for the user specified"
-	$PRINTF "\nusage: $0 groupid [user] - to show the groupid for the user specified"
+	$PRINTF "\nusage: $0 groupid [user] - to show the group for the user specified"
 	$PRINTF "\nusage: $0 comment [user] - to any comments for the user specified"
 	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified"	
 	$PRINTF "\nusage: $0 shell [user] - to show the shell for the user specified\n"	
