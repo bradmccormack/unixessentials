@@ -74,7 +74,6 @@ function showhistory() {
 	local userhistory
 
 	userhistory=$(${CAT} ${HISTFILE} 2>/dev/null)
-
 	if [ "${userhistory}" ]; then
 		$PRINTF "\nHistory\n"
 		$ECHO "${userhistory}" | ${LESS}

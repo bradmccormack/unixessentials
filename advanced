@@ -90,6 +90,7 @@ while getopts ":pob:c:" arg; do
 		"b")
 			params=($@)
 			wildcard=${OPTARG}
+			# Obtain the destination
 			idx=$((OPTIND-1))
 			destination=${params[$idx]}
 			findandcopy "${wildcard}" "${destination}" 

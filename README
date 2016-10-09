@@ -1,0 +1,28 @@
+How to use these scripts
+************************
+
+1) Use the sysman script by typing in ./sysman and following the onscreen instructions
+2) Follow the basic script by typing ./basic and looking at the usage examples
+3) Follow the advanced script by typing ./advanced and looking at the usage examples
+4) Follow the userman script by typing ./userman and looking at the usage examples
+
+
+Problems I had when working on this assignment
+**************************************************
+
+* I couldn't figure out how to redirect STDERR of a subshell with piped commands inside of it so I had to redirect STDERR on every command in the pipe inside the subshell
+e.g
+userid=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 3 2>/dev/null)
+
+I know there would be a more succint way of doing this, but I couldn't trivially figure it out
+
+
+Some of my code is a little too verbose / terse
+e.g All the /etc/passwd parsing comes down to different columns only so I should refactor to use a single function and just change the column. However, I ran out of time.
+
+Notes
+*****
+
+* I'm pretty happy with how I implemented the menus. It ended up being a lot less code than doing it by hand for all menus and then handling different valid range of choices.
+* I'm happy that I learned about ShellCheck. I didn't know about this before. I also installed it on Arch Linux here so I could use it via the cli continuously
+

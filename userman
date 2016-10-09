@@ -24,15 +24,19 @@ function checkuser() {
 
 }
 
-
 function showuserid() {
 	local userid
 
 	if [ "${1}" ]; then
 		checkuser "$1"
-		userid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 3)
-		$PRINTF "\nThe userid is ${userid}\n"
+		userid=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 3 2>/dev/null)
 
+		if [ "${userid}" ];then
+			$PRINTF "\nThe userid is ${userid}\n"
+		else
+			$PRINTF "\nFailed to get the userid from /etc/passwd"
+			$EXIT 3
+		fi
 	else
 		$PRINTF "\nUser name was not specified."
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
@@ -45,8 +49,13 @@ function showgroupid() {
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		groupid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 4)
-		$PRINTF "\nThe groupid is ${groupid}\n"
+		groupid=$($CAT /etc/passwd 2>/dev/null 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 4 2>/dev/null)
+		if [ "${groupid}" ];then
+			$PRINTF "\nThe groupid is ${groupid}\n"
+		else
+			$PRINTF "\nFailed to get the groupid from /etc/passwd"
+			$EXIT 3
+		fi
 	else
 		$PRINTF "\nUser name was not specified."
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
@@ -59,8 +68,13 @@ function showcomment() {
 	
 	if [ "${1}" ]; then
 		checkuser "$1"
-		comment=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 5)
-		$PRINTF "\nThe comment is ${comment}\n"
+		comment=$($CAT /etc/passwd 2>/dev/null | $GREP "$1" 2>/dev/null | $CUT -d':' -f 5 2>/dev/null)
+		if [ "${comment}" ]; then
+			$PRINTF "\nThe comment is ${comment}\n"
+		else
+			$PRINTF "\nFailed to get the comment from /etc/passwd"
+			$EXIT 3
+		fi
 	else
 		$PRINTF "\nUser name was not specified."
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
@@ -74,7 +88,12 @@ function showhome() {
 	if [ "${1}" ]; then
 		checkuser "$1"
 		home=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 6)
-		$PRINTF "\nThe home directory is ${home}\n"
+		if [ "${home}" ]; then
+			$PRINTF "\nThe home directory is ${home}\n"
+		else
+			$PRINTF "\nFailed to get the home directory from /etc/passwd"
+			$EXIT 3
+		fi
 	else
 		$PRINTF "\nUser name was not specified."
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
@@ -88,7 +107,11 @@ function showshell() {
 	if [ "${1}" ]; then
 		checkuser "$1"
 		shell=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 7)
-		$PRINTF "\nThe shell is ${shell}\n"
+		if [ "${shell}" ]; then
+			$PRINTF "\nThe shell is ${shell}\n"
+		else
+			$PRINTF "\nFailed to get the shell from /etc/passwd"
+		fi
 	else
 		$PRINTF "\nUsername was not specified."
 		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
@@ -101,7 +124,7 @@ function showusage() {
 	$PRINTF "\nusage: $0 userid [user] - to show the userid for the user specified"
 	$PRINTF "\nusage: $0 groupid [user] - to show the groupid for the user specified"
 	$PRINTF "\nusage: $0 comment [user] - to any comments for the user specified"
-	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified\n"	
+	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified"	
 	$PRINTF "\nusage: $0 shell [user] - to show the shell for the user specified\n"	
 	# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 	$EXIT 3
