@@ -11,7 +11,8 @@ CUT=/usr/bin/cut
 GREP=/usr/bin/grep
 PRINTF=/usr/bin/printf
 
-# Use the built in for echo
+# Use the built in for exit
+EXIT="command exit"
 
 function showuserid() {
 	local userid
@@ -21,6 +22,8 @@ function showuserid() {
 
 	else
 		$PRINTF "\nUser name was not specified."
+		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+		$EXIT 3
 	fi
 }
 
@@ -31,6 +34,8 @@ function showgroupid() {
 		$PRINTF "\nThe groupid is ${groupid}\n"
 	else
 		$PRINTF "\nUser name was not specified."
+		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+		$EXIT 3
 	fi
 }
 
@@ -41,6 +46,8 @@ function showcomment() {
 		$PRINTF "\nThe comment is ${comment}\n"
 	else
 		$PRINTF "\nUser name was not specified."
+		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+		$EXIT 3
 	fi
 }
 
@@ -51,6 +58,20 @@ function showhome() {
 		$PRINTF "\nThe home directory is ${home}\n"
 	else
 		$PRINTF "\nUser name was not specified."
+		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+		$EXIT 3
+	fi
+}
+
+function showshell() {
+	local shell
+	if [ "${1}" ]; then
+		shell=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 7)
+		$PRINTF "\nThe shell is ${shell}\n"
+	else
+		$PRINTF "\nUsername was not specified."
+		# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+		$EXIT 3
 	fi
 }
 
@@ -59,13 +80,14 @@ function showusage() {
 	$PRINTF "\nusage: $0 userid [user] - to show the userid for the user specified"
 	$PRINTF "\nusage: $0 groupid [user] - to show the groupid for the user specified"
 	$PRINTF "\nusage: $0 comment [user] - to any comments for the user specified"
-	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified\n"
+	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified\n"	
+	# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
+	$EXIT 3
 }
 
 if [ -z "$1" ]; then
 	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
 	showusage
-	exit 1
 fi
 
 ${CLEAR}
@@ -84,6 +106,9 @@ case $1 in
 "home")
 	showhome "$2"
 	;;
+"shell")
+	showshell "$2"
+	;;	
 *)
 	$PRINTF "\nUnsupported argument. Usage examples are :\n"
 	showusage

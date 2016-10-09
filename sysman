@@ -6,20 +6,31 @@ set -f
 HISTFILE=~/.bash_history 
 
 # Absolute paths to executables - Specify the versions we want to use. We don't want to use whatever is in ${PATH} (as specified in the assignment)
-PRINTF=/usr/bin/printf
-BASIC=./basic
 ADVANCED=./advanced
+BASIC=./basic
+CAT=/usr/bin/cat
+GREP=/usr/bin/grep
+PRINTF=/usr/bin/printf
+USERMAN=./userman
 
-# Use the built in for echo and read
+# Use the built in for echo, read and exit
 ECHO="command echo"
+EXIT="command exit"
 READ="command read"
 
-# TODO trap SIGINT and whatever else I need to
+# Handle  SIGINT interrupts
+trap handler SIGINT
 
 declare -i choice
 
+function handler() {
+	$PRINTF "\nThank you for using System Manager.\n"
+	$EXIT 3
+}
+
+
 function mainmenu() {
-cat << EOF
+$CAT << EOF
  
  Welcome to System Manager
  -------------------------
@@ -33,8 +44,7 @@ EOF
 }
 
 function basicmenu() {
-
-cat << EOF
+$CAT << EOF
 
 Basic Tasks Menu
 ----------------
@@ -50,8 +60,7 @@ EOF
 }
 
 function advancedmenu() {
-
-cat << EOF	
+$CAT << EOF
 
 Advanced Tasks Menu
 ----------------
@@ -65,7 +74,7 @@ EOF
 }
 
 function passwdmenu() {
-cat << EOF
+$CAT << EOF
 
 Passwd Tasks Menu
 ----------------
@@ -80,16 +89,17 @@ Passwd Tasks Menu
 EOF
 }
 
+# Renders a menu and gets an integer choice (verified to be a valid choice)
 # $1 is the menu to render, $2 is the prompt
 function getchoice() {
 	local -i menuopts
 	
 	choice=0
 
-	# Output the menu to a variable - sfind out how many options there are and only include lines starting with a single number and a )
-	menuopts=$(( $($ECHO "$($1)" | grep '^[0-9])' -c) ))
-	#echo "Menu opts count is ${menuopts}"
-	#exit 0
+	# Output the menu to a variable - find out how many options there are and only include lines starting with a single number and a )
+	menuopts=$(( $($ECHO "$($1)" | $GREP '^[0-9])' -c) ))
+	
+	#Continue until a valid entry has been made
 	while (( choice <= 0 || choice > menuopts ));
 	do
 		# Display the menu
@@ -103,7 +113,6 @@ function getchoice() {
 		fi
 
 	done
-
 }
 
 choice=0
@@ -164,9 +173,37 @@ do
 			choice=0
 			;;		
 		3)
+			username=""
 			getchoice passwdmenu "Please enter your selection :"	
+			
+			#If its quit this menu, then skip username related tasks
+			if [ ${choice} = 6 ]; then
+				choice=0
+				continue
+			fi
+
+			$PRINTF "Enter the username >"
+			$READ username
+			case ${choice} in
+				1)
+					$USERMAN userid "${username}"
+					;;
+				2)	
+					$USERMAN groupid "${username}"
+					;;
+				3)	
+					$USERMAN comment "${username}"
+					;;
+				4)
+					$USERMAN home "${username}"
+					;;
+				5)
+					$USERMAN shell "${username}"
+					;;
+			esac
+			choice=0
 			;;
 	esac
 done
 
-echo "Bye Bye"
+$PRINTF "\nThank you for using System Manager.\n"

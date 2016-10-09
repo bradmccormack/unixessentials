@@ -12,8 +12,10 @@ LESS=/usr/bin/less
 PRINTF=/usr/bin/printf
 QUOTA=/usr/bin/quota
 
-# Use the built in for echo
+# Use the built in for echo and exit
 ECHO="command echo"
+EXIT="command exit"
+
 
 function showfreemem() {
 	local memfree
@@ -24,6 +26,7 @@ function showfreemem() {
 		$ECHO "${memfree}"
 	else
 		$PRINTF "\nFailed to get free memory information.\n"
+		$EXIT 3
 	fi		
 }
 
@@ -36,6 +39,7 @@ function showdiskfree() {
 		$ECHO "${freedisk}"
 	else
 		$PRINTF "\nFailed to get disk free information.\n"
+		$EXIT 3
 	fi
 }
 
@@ -48,6 +52,7 @@ function showquota() {
 		$PRINTF "${quotausage}\n"
 	else
 		$PRINTF "\nNo quota information currently available.\n"
+		$EXIT 3
 	fi		
 }
 
@@ -60,6 +65,7 @@ function showusergroups() {
 		$PRINTF "\n${usergroups}\n"
 	else
 		$PRINTF "\nFailed to get the list of groups the current user is a member of.\n"
+		$EXIT 3
 	fi
 
 }
@@ -74,6 +80,7 @@ function showhistory() {
 		$ECHO "${userhistory}" | ${LESS}
 	else
 		$PRINTF "\nFailed to obtain the history for the current user\n"
+		$EXIT 3
 	fi
 
 }
@@ -84,12 +91,12 @@ function showusage() {
 	$PRINTF "\nusage: $0 quota - to show the disk quote(s) for the current user"
 	$PRINTF "\nusage: $0 groups - to show the groups that the current user is a member of"
 	$PRINTF "\nusage: $0 history - to show all the commands that have been entered into the current shell\n"
+	$EXIT 3
 }
 
 if [ -z "$1" ]; then
 	$PRINTF "\nNo arguments supplied. Usage examples are :\n"
 	showusage
-	exit 1
 fi
 
 ${CLEAR}
