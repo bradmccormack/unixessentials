@@ -9,14 +9,27 @@ CAT=/usr/bin/cat
 CLEAR=/usr/bin/clear
 CUT=/usr/bin/cut
 GREP=/usr/bin/grep
+ID=/usr/bin/id
 PRINTF=/usr/bin/printf
 
 # Use the built in for exit
 EXIT="command exit"
 
+# Checks for the existence of a user. Exits this script if the user doesn't exist
+function checkuser() {
+	if ! "$ID" -u "$1" > /dev/null 2>&1; then
+		$PRINTF "\nUser ${1} doesn't exist.\n"
+		$EXIT 3
+	fi
+
+}
+
+
 function showuserid() {
 	local userid
+
 	if [ "${1}" ]; then
+		checkuser "$1"
 		userid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 3)
 		$PRINTF "\nThe userid is ${userid}\n"
 
@@ -29,7 +42,9 @@ function showuserid() {
 
 function showgroupid() {
 	local groupid
+	
 	if [ "${1}" ]; then
+		checkuser "$1"
 		groupid=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 4)
 		$PRINTF "\nThe groupid is ${groupid}\n"
 	else
@@ -41,7 +56,9 @@ function showgroupid() {
 
 function showcomment() {
 	local comment
+	
 	if [ "${1}" ]; then
+		checkuser "$1"
 		comment=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 5)
 		$PRINTF "\nThe comment is ${comment}\n"
 	else
@@ -53,7 +70,9 @@ function showcomment() {
 
 function showhome() {
 	local home
+	
 	if [ "${1}" ]; then
+		checkuser "$1"
 		home=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 6)
 		$PRINTF "\nThe home directory is ${home}\n"
 	else
@@ -65,7 +84,9 @@ function showhome() {
 
 function showshell() {
 	local shell
+	
 	if [ "${1}" ]; then
+		checkuser "$1"
 		shell=$($CAT /etc/passwd | $GREP "$1" | $CUT -d':' -f 7)
 		$PRINTF "\nThe shell is ${shell}\n"
 	else
@@ -81,6 +102,7 @@ function showusage() {
 	$PRINTF "\nusage: $0 groupid [user] - to show the groupid for the user specified"
 	$PRINTF "\nusage: $0 comment [user] - to any comments for the user specified"
 	$PRINTF "\nusage: $0 home [user] - to show the home directory for the user specified\n"	
+	$PRINTF "\nusage: $0 shell [user] - to show the shell for the user specified\n"	
 	# Don't use a reserved exit code http://tldp.org/LDP/abs/html/exitcodes.html#EXITCODESREF
 	$EXIT 3
 }
