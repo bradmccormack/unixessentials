@@ -15,9 +15,9 @@ PRINTF=/usr/bin/printf
 BASIC=./basic
 ADVANCED=./advanced
 
-
-# Use the built in for echo
+# Use the built in for echo and read
 ECHO="command echo"
+READ="command read"
 
 # TODO trap SIGINT and whatever else I need to
 
@@ -103,7 +103,7 @@ function getchoice() {
 
 		# Display the prompt and get the next number
 		$PRINTF "%s" "$2"
-		read choice
+		$READ choice
 		if (( choice <= 0 || choice > ${menuopts} )); then
 			$ECHO "Invalid choice. Please try again"
 		fi
@@ -114,7 +114,6 @@ function getchoice() {
 
 choice=0
 
-# TODO STOP RE-USING CHOICE - make the getchoice return something and just use /?
 while (( choice != 4 ))
 do
 	getchoice mainmenu "Please enter a choice :"
@@ -154,8 +153,12 @@ do
 					;;
 				2)	$ADVANCED -o
 					;;
-				3)	
-					echo "TODO - Still have to grab input of the wildcard they want and the destination directory"
+				3)	$PRINTF "Enter the wildcard to find files that you would like to backup (e.g *.txt) >"
+					$READ wildcard
+					$PRINTF "Enter the destination directory to backup the files to >"
+					$READ destination
+					$ADVANCED -b ${wildcard} ${destination}
+
 					;;
 				4)
 					choice=0	
