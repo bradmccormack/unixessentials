@@ -89,7 +89,7 @@ Passwd Tasks Menu
 EOF
 }
 
-# Renders a menu and gets an integer CHOICE (verified to be a valid CHOICE)
+# Renders a menu and gets an integer choice (verified to be a valid choice)
 # $1 is the menu to render, $2 is the prompt
 function getchoice() {
 	local -i MENUOPTS
@@ -109,7 +109,7 @@ function getchoice() {
 		$PRINTF "%s" "$2"
 		$READ CHOICE
 		if (( CHOICE <= 0 || CHOICE > MENUOPTS )); then
-			$ECHO "Invalid CHOICE. Please try again"
+			$ECHO "Invalid choice. Please try again"
 		fi
 
 	done
@@ -119,7 +119,7 @@ CHOICE=0
 
 while (( CHOICE != 4 ))
 do
-	getchoice mainmenu "Please enter a CHOICE :"
+	getchoice mainmenu "Please enter a choice :"
 	case ${CHOICE} in
  
 		1)
@@ -150,7 +150,7 @@ do
 		2)
 			wildcard=""
 			destination=""
-			getchoice advancedmenu "Please enter your CHOICE :"
+			getchoice advancedmenu "Please enter your choice :"
 			case ${CHOICE} in
 			
 				1) 
