@@ -21,7 +21,7 @@ READ="command read"
 # Handle  SIGINT interrupts
 trap handler SIGINT
 
-declare -i choice
+declare -i CHOICE
 
 function handler() {
 	$PRINTF "\nThank you for using System Manager.\n"
@@ -89,42 +89,42 @@ Passwd Tasks Menu
 EOF
 }
 
-# Renders a menu and gets an integer choice (verified to be a valid choice)
+# Renders a menu and gets an integer CHOICE (verified to be a valid CHOICE)
 # $1 is the menu to render, $2 is the prompt
 function getchoice() {
-	local -i menuopts
+	local -i MENUOPTS
 	
-	choice=0
+	CHOICE=0
 
 	# Output the menu to a variable - find out how many options there are and only include lines starting with a single number and a )
-	menuopts=$(( $($ECHO "$($1)" | $GREP '^[0-9])' -c) ))
+	MENUOPTS=$(( $($ECHO "$($1)" | $GREP '^[0-9])' -c) ))
 	
 	#Continue until a valid entry has been made
-	while (( choice <= 0 || choice > menuopts ));
+	while (( CHOICE <= 0 || CHOICE > MENUOPTS ));
 	do
 		# Display the menu
 		$1
 
 		# Display the prompt and get the next number
 		$PRINTF "%s" "$2"
-		$READ choice
-		if (( choice <= 0 || choice > menuopts )); then
-			$ECHO "Invalid choice. Please try again"
+		$READ CHOICE
+		if (( CHOICE <= 0 || CHOICE > MENUOPTS )); then
+			$ECHO "Invalid CHOICE. Please try again"
 		fi
 
 	done
 }
 
-choice=0
+CHOICE=0
 
-while (( choice != 4 ))
+while (( CHOICE != 4 ))
 do
-	getchoice mainmenu "Please enter a choice :"
-	case ${choice} in
+	getchoice mainmenu "Please enter a CHOICE :"
+	case ${CHOICE} in
  
 		1)
 			getchoice basicmenu "Please enter an option :"
-			case ${choice} in
+			case ${CHOICE} in
 			
 				1)	
 					$BASIC freemem
@@ -145,13 +145,13 @@ do
 					continue
 					;;
 			esac
-			choice=0		
+			CHOICE=0		
 			;;
 		2)
 			wildcard=""
 			destination=""
-			getchoice advancedmenu "Please enter your choice :"
-			case ${choice} in
+			getchoice advancedmenu "Please enter your CHOICE :"
+			case ${CHOICE} in
 			
 				1) 
 					$ADVANCED -p
@@ -166,25 +166,25 @@ do
 
 					;;
 				4)
-					choice=0	
+					CHOICE=0	
 					continue
 					;;	
 			esac
-			choice=0
+			CHOICE=0
 			;;		
 		3)
 			username=""
 			getchoice passwdmenu "Please enter your selection :"	
 			
 			#If its quit this menu, then skip username related tasks
-			if [ ${choice} = 6 ]; then
-				choice=0
+			if [ ${CHOICE} = 6 ]; then
+				CHOICE=0
 				continue
 			fi
 
 			$PRINTF "Enter the username >"
 			$READ username
-			case ${choice} in
+			case ${CHOICE} in
 				1)
 					$USERMAN userid "${username}"
 					;;
@@ -201,7 +201,7 @@ do
 					$USERMAN shell "${username}"
 					;;
 			esac
-			choice=0
+			CHOICE=0
 			;;
 	esac
 done
